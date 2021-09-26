@@ -21,6 +21,7 @@ import { polyfill } from "react-lifecycles-compat";
 
 import { AbstractPureComponent2, Classes, Position } from "../../common";
 import { DISPLAYNAME_PREFIX, ActionProps, LinkProps } from "../../common/props";
+import { withConfig, ConfigContextState } from "../../context/config/configProvider";
 import { Icon } from "../icon/icon";
 import { IPopoverProps, Popover, PopoverInteractionKind } from "../popover/popover";
 import { Text } from "../text/text";
@@ -30,8 +31,9 @@ import { Menu } from "./menu";
 
 // eslint-disable-next-line deprecation/deprecation
 export type MenuItemProps = IMenuItemProps;
+
 /** @deprecated use MenuItemProps */
-export interface IMenuItemProps extends ActionProps, LinkProps {
+export interface IMenuItemProps extends ActionProps, LinkProps, Partial<ConfigContextState> {
     // override from IActionProps to make it required
     /** Item text, required for usability. */
     text: React.ReactNode;
@@ -112,7 +114,7 @@ export interface IMenuItemProps extends ActionProps, LinkProps {
 }
 
 @polyfill
-export class MenuItem extends AbstractPureComponent2<MenuItemProps & React.AnchorHTMLAttributes<HTMLAnchorElement>> {
+class MenuItemComponent extends AbstractPureComponent2<MenuItemProps & React.AnchorHTMLAttributes<HTMLAnchorElement>> {
     public static defaultProps: MenuItemProps = {
         disabled: false,
         multiline: false,
@@ -158,6 +160,8 @@ export class MenuItem extends AbstractPureComponent2<MenuItemProps & React.Ancho
             className,
         );
 
+        const caretIcon = this.props.isRTL ? "caret-left" : "caret-right";
+
         const target = React.createElement(
             tagName,
             {
@@ -171,7 +175,7 @@ export class MenuItem extends AbstractPureComponent2<MenuItemProps & React.Ancho
                 {text}
             </Text>,
             this.maybeRenderLabel(labelElement),
-            hasSubmenu ? <Icon title="Open sub menu" icon="caret-right" /> : undefined,
+            hasSubmenu ? <Icon title="Open sub menu" icon={caretIcon} /> : undefined,
         );
 
         const liClasses = classNames({ [Classes.MENU_SUBMENU]: hasSubmenu });
@@ -196,6 +200,8 @@ export class MenuItem extends AbstractPureComponent2<MenuItemProps & React.Ancho
             return target;
         }
         const { disabled, popoverProps } = this.props;
+        const position = this.props.isRTL ? Position.LEFT_TOP : Position.RIGHT_TOP;
+
         return (
             /* eslint-disable-next-line deprecation/deprecation */
             <Popover
@@ -206,7 +212,7 @@ export class MenuItem extends AbstractPureComponent2<MenuItemProps & React.Ancho
                 hoverCloseDelay={0}
                 interactionKind={PopoverInteractionKind.HOVER}
                 modifiers={SUBMENU_POPOVER_MODIFIERS}
-                position={Position.RIGHT_TOP}
+                position={position}
                 usePortal={false}
                 {...popoverProps}
                 content={<Menu>{children}</Menu>}
@@ -217,6 +223,8 @@ export class MenuItem extends AbstractPureComponent2<MenuItemProps & React.Ancho
         );
     }
 }
+
+export const MenuItem = withConfig<MenuItemProps>(MenuItemComponent);
 
 const SUBMENU_POPOVER_MODIFIERS: Modifiers = {
     // 20px padding - scrollbar width + a bit
