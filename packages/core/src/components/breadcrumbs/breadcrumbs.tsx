@@ -19,6 +19,7 @@ import * as React from "react";
 import { polyfill } from "react-lifecycles-compat";
 
 import { AbstractPureComponent2, Boundary, Classes, Props, Position, removeNonHTMLProps } from "../../common";
+import { ConfigContextState, withConfig } from "../../context/config/configProvider";
 import { Menu } from "../menu/menu";
 import { MenuItem } from "../menu/menuItem";
 import { OverflowListProps, OverflowList } from "../overflow-list/overflowList";
@@ -28,7 +29,7 @@ import { Breadcrumb, BreadcrumbProps } from "./breadcrumb";
 // eslint-disable-next-line deprecation/deprecation
 export type BreadcrumbsProps = IBreadcrumbsProps;
 /** @deprecated use BreadcrumbsProps */
-export interface IBreadcrumbsProps extends Props {
+export interface IBreadcrumbsProps extends Props, Partial<ConfigContextState> {
     /**
      * Callback invoked to render visible breadcrumbs. Best practice is to
      * render a `<Breadcrumb>` element. If `currentBreadcrumbRenderer` is also
@@ -81,7 +82,7 @@ export interface IBreadcrumbsProps extends Props {
 }
 
 @polyfill
-export class Breadcrumbs extends AbstractPureComponent2<BreadcrumbsProps> {
+class BreadcrumbsComponent extends AbstractPureComponent2<BreadcrumbsProps> {
     public static defaultProps: Partial<BreadcrumbsProps> = {
         collapseFrom: Boundary.START,
     };
@@ -105,6 +106,16 @@ export class Breadcrumbs extends AbstractPureComponent2<BreadcrumbsProps> {
     private renderOverflow = (items: BreadcrumbProps[]) => {
         const { collapseFrom } = this.props;
         const position = collapseFrom === Boundary.END ? Position.BOTTOM_RIGHT : Position.BOTTOM_LEFT;
+
+        // Reverse the position in RTL direction.
+        const popoverPosition = this.props.isRTL
+            ? Position.BOTTOM_LEFT === position
+                ? Position.BOTTOM_RIGHT
+                : Position.BOTTOM_RIGHT === position
+                ? Position.BOTTOM_LEFT
+                : position
+            : position;
+
         let orderedItems = items;
         if (collapseFrom === Boundary.START) {
             // If we're collapsing from the start, the menu should be read from the bottom to the
@@ -118,7 +129,7 @@ export class Breadcrumbs extends AbstractPureComponent2<BreadcrumbsProps> {
         return (
             <li>
                 <Popover
-                    position={position}
+                    position={popoverPosition}
                     disabled={orderedItems.length === 0}
                     content={<Menu>{orderedItems.map(this.renderOverflowBreadcrumb)}</Menu>}
                     {...this.props.popoverProps}
@@ -152,3 +163,5 @@ export class Breadcrumbs extends AbstractPureComponent2<BreadcrumbsProps> {
         }
     }
 }
+
+export const Breadcrumbs = withConfig<BreadcrumbsProps>(BreadcrumbsComponent);
