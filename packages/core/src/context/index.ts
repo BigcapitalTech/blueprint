@@ -20,3 +20,11 @@ export {
     HotkeysProvider,
     HotkeysProviderProps,
 } from "./hotkeys/hotkeysProvider";
+
+export {
+    useConfigContext,
+    ConfigContext,
+    ConfigProvider,
+    ConfigProviderProps,
+    ConfigContextState,
+} from "./config/configProvider";
