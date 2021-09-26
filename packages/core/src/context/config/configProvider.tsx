@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import classNames from "classnames";
 import * as React from "react";
 
 type Direction = "rtl" | "ltr";
@@ -58,7 +59,17 @@ export const ConfigProvider = ({ children, ...configProvider }: ConfigProviderPr
         [state, isLTR, isRTL],
     );
 
-    return <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>;
+    return (
+        <ConfigContext.Provider value={value}>
+            <div
+                className={classNames("bp3-dir", {
+                    "bp3-dir-rtl": isRTL,
+                })}
+            >
+                {children}
+            </div>
+        </ConfigContext.Provider>
+    );
 };
 
 export const withConfig = (mapper?: any) => (Component: any) => {
