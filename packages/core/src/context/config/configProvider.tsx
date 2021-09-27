@@ -72,15 +72,17 @@ export const ConfigProvider = ({ children, ...configProvider }: ConfigProviderPr
     );
 };
 
-export const withConfig = (mapper?: any) => (Component: any) => {
-    return function ConfigConsumerComponent(props: any) {
-        return (
-            <ConfigContext.Consumer>
-                {(contexts: ConfigContextState) => {
-                    const contextProps = typeof mapper !== "undefined" ? mapper(contexts) : contexts;
-                    return <Component {...props} {...contextProps} />;
-                }}
-            </ConfigContext.Consumer>
-        );
+export function withConfig<T extends Partial<ConfigContextState> = Partial<ConfigContextState>>(
+    WrappedComponent: React.ComponentType<T>,
+) {
+    const displayName = WrappedComponent.displayName || WrappedComponent.name || "Component";
+
+    const ComponentWithTheme = (props: Omit<T, keyof ConfigContextState>) => {
+        const configProps = useConfigContext();
+
+        return <WrappedComponent {...configProps} {...(props as T)} />;
     };
-};
+    ComponentWithTheme.displayName = `withConfig(${displayName})`;
+
+    return ComponentWithTheme;
+}
