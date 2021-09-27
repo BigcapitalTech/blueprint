@@ -23,6 +23,7 @@ export {
 
 export {
     useConfigContext,
+    withConfig,
     ConfigContext,
     ConfigProvider,
     ConfigProviderProps,
