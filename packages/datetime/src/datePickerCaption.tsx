@@ -18,13 +18,21 @@ import * as React from "react";
 import { CaptionElementProps } from "react-day-picker";
 import { polyfill } from "react-lifecycles-compat";
 
-import { AbstractPureComponent2, Divider, HTMLSelect, IconSize, OptionProps } from "@blueprintjs/core";
+import {
+    AbstractPureComponent2,
+    Divider,
+    HTMLSelect,
+    IconSize,
+    OptionProps,
+    ConfigContextState,
+    withConfig,
+} from "@blueprintjs/core";
 
 import * as Classes from "./common/classes";
 import { clone } from "./common/dateUtils";
 import { measureTextWidth } from "./common/utils";
 
-export interface IDatePickerCaptionProps extends CaptionElementProps {
+export interface IDatePickerCaptionProps extends CaptionElementProps, Partial<ConfigContextState> {
     maxDate: Date;
     minDate: Date;
     onMonthChange?: (month: number) => void;
@@ -39,7 +47,7 @@ export interface IDatePickerCaptionState {
 }
 
 @polyfill
-export class DatePickerCaption extends AbstractPureComponent2<IDatePickerCaptionProps, IDatePickerCaptionState> {
+class DatePickerCaptionComponent extends AbstractPureComponent2<IDatePickerCaptionProps, IDatePickerCaptionState> {
     public state: IDatePickerCaptionState = { monthRightOffset: 0 };
 
     private containerElement: HTMLElement;
@@ -77,7 +85,12 @@ export class DatePickerCaption extends AbstractPureComponent2<IDatePickerCaption
 
         const monthSelect = (
             <HTMLSelect
-                iconProps={{ style: { right: this.state.monthRightOffset } }}
+                iconProps={{
+                    style: {
+                        left: this.props.isRTL ? this.state.monthRightOffset : null,
+                        right: this.props.isLTR ? this.state.monthRightOffset : null,
+                    },
+                }}
                 className={Classes.DATEPICKER_MONTH_SELECT}
                 key="month"
                 minimal={true}
@@ -146,3 +159,5 @@ export class DatePickerCaption extends AbstractPureComponent2<IDatePickerCaption
         };
     }
 }
+
+export const DatePickerCaption = withConfig<IDatePickerCaptionProps>(DatePickerCaptionComponent);

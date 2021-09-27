@@ -18,12 +18,12 @@ import classNames from "classnames";
 import * as React from "react";
 import { NavbarElementProps } from "react-day-picker";
 
-import { Button } from "@blueprintjs/core";
+import { Button, ConfigContextState, withConfig } from "@blueprintjs/core";
 
 import * as Classes from "./common/classes";
 import { areSameMonth } from "./common/dateUtils";
 
-export interface IDatePickerNavbarProps extends NavbarElementProps {
+export interface IDatePickerNavbarProps extends NavbarElementProps, Partial<ConfigContextState> {
     maxDate: Date;
     minDate: Date;
 
@@ -31,9 +31,12 @@ export interface IDatePickerNavbarProps extends NavbarElementProps {
     hideRightNavButton?: boolean;
 }
 
-export class DatePickerNavbar extends React.PureComponent<IDatePickerNavbarProps> {
+class DatePickerNavbarComponent extends React.PureComponent<IDatePickerNavbarProps> {
     public render() {
         const { classNames: classes, month, maxDate, minDate } = this.props;
+
+        const leftButtonIcon = this.props.isRTL ? "chevron-right" : "chevron-left";
+        const rightButtonIcon = this.props.isRTL ? "chevron-left" : "chevron-right";
 
         return (
             <div className={classNames(Classes.DATEPICKER_NAVBAR, classes.navBar)}>
@@ -41,7 +44,7 @@ export class DatePickerNavbar extends React.PureComponent<IDatePickerNavbarProps
                     <Button
                         className={classes.navButtonPrev}
                         disabled={areSameMonth(month, minDate)}
-                        icon="chevron-left"
+                        icon={leftButtonIcon}
                         minimal={true}
                         onClick={this.handlePreviousClick}
                     />
@@ -50,7 +53,7 @@ export class DatePickerNavbar extends React.PureComponent<IDatePickerNavbarProps
                     <Button
                         className={classes.navButtonNext}
                         disabled={areSameMonth(month, maxDate)}
-                        icon="chevron-right"
+                        icon={rightButtonIcon}
                         minimal={true}
                         onClick={this.handleNextClick}
                     />
@@ -63,3 +66,5 @@ export class DatePickerNavbar extends React.PureComponent<IDatePickerNavbarProps
 
     private handlePreviousClick = () => this.props.onPreviousClick();
 }
+
+export const DatePickerNavbar = withConfig<IDatePickerNavbarProps>(DatePickerNavbarComponent);
