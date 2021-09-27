@@ -30,6 +30,7 @@ import {
     MaybeElement,
     removeNonHTMLProps,
 } from "../../common/props";
+import { ConfigContextState, withConfig } from "../../context/config/configProvider";
 import { Icon, IconName } from "../icon/icon";
 import { AsyncControllableInput } from "./asyncControllableInput";
 
@@ -116,6 +117,7 @@ export type InputGroupProps2 = IInputGroupProps2;
 /** @deprecated use InputGroupProps2 */
 export interface IInputGroupProps2
     extends Omit<HTMLInputProps, keyof ControlledProps2>,
+        Partial<ConfigContextState>,
         ControlledProps2,
         IntentProps,
         Props {
@@ -189,7 +191,7 @@ export interface IInputGroupState {
 }
 
 @polyfill
-export class InputGroup extends AbstractPureComponent2<InputGroupProps2, IInputGroupState> {
+class InputGroupComponent extends AbstractPureComponent2<InputGroupProps2, IInputGroupState> {
     public static displayName = `${DISPLAYNAME_PREFIX}.InputGroup`;
 
     public state: IInputGroupState = {};
@@ -219,8 +221,8 @@ export class InputGroup extends AbstractPureComponent2<InputGroupProps2, IInputG
         );
         const style: React.CSSProperties = {
             ...this.props.style,
-            paddingLeft: this.state.leftElementWidth,
-            paddingRight: this.state.rightElementWidth,
+            paddingLeft: this.props.isRTL ? this.state.rightElementWidth : this.state.leftElementWidth,
+            paddingRight: this.props.isRTL ? this.state.leftElementWidth : this.state.rightElementWidth,
         };
         const inputProps = {
             type: "text",
@@ -311,3 +313,5 @@ export class InputGroup extends AbstractPureComponent2<InputGroupProps2, IInputG
         }
     }
 }
+
+export const InputGroup = withConfig<InputGroupProps2 & IInputGroupState>(InputGroupComponent);
