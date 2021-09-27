@@ -34,6 +34,8 @@ import {
     Position,
     refHandler,
     setRef,
+    withConfig,
+    ConfigContextState,
 } from "@blueprintjs/core";
 
 import { DateRange } from "./common/dateRange";
@@ -54,7 +56,11 @@ type InputEvent =
 // eslint-disable-next-line deprecation/deprecation
 export type DateRangeInputProps = IDateRangeInputProps;
 /** @deprecated use DateRangeInputProps */
-export interface IDateRangeInputProps extends IDatePickerBaseProps, DateFormatProps, Props {
+export interface IDateRangeInputProps
+    extends IDatePickerBaseProps,
+        DateFormatProps,
+        Partial<ConfigContextState>,
+        Props {
     /**
      * Whether the start and end dates of the range can be the same day.
      * If `true`, clicking a selected date will create a one-day range.
@@ -215,7 +221,7 @@ interface IStateKeysAndValuesObject {
 }
 
 @polyfill
-export class DateRangeInput extends AbstractPureComponent2<DateRangeInputProps, IDateRangeInputState> {
+class DateRangeInputComponent extends AbstractPureComponent2<DateRangeInputProps, IDateRangeInputState> {
     public static defaultProps: Partial<DateRangeInputProps> = {
         allowSingleDayRange: false,
         closeOnSelection: true,
@@ -341,13 +347,15 @@ export class DateRangeInput extends AbstractPureComponent2<DateRangeInputProps, 
 
         const popoverClassName = classNames(popoverProps.className, this.props.className);
 
+        const popoverPosition = this.props.isRTL ? Position.BOTTOM_RIGHT : Position.BOTTOM_LEFT;
+
         // allow custom props for the popover and each input group, but pass them in an order that
         // guarantees only some props are overridable.
         return (
             /* eslint-disable-next-line deprecation/deprecation */
             <Popover
                 isOpen={this.state.isOpen}
-                position={Position.BOTTOM_LEFT}
+                position={popoverPosition}
                 {...this.props.popoverProps}
                 autoFocus={false}
                 className={popoverClassName}
@@ -985,7 +993,7 @@ export class DateRangeInput extends AbstractPureComponent2<DateRangeInputProps, 
     // the constructor and componentDidUpdate.
     private getFormattedMinMaxDateString(props: IDateRangeInputProps, propName: "minDate" | "maxDate") {
         const date = props[propName];
-        const defaultDate = DateRangeInput.defaultProps[propName];
+        const defaultDate = DateRangeInputComponent.defaultProps[propName];
         // default values are applied only if a prop is strictly `undefined`
         // See: https://facebook.github.io/react/docs/react-component.html#defaultprops
         return getFormattedDateString(date === undefined ? defaultDate : date, this.props);
@@ -1008,3 +1016,5 @@ export class DateRangeInput extends AbstractPureComponent2<DateRangeInputProps, 
         return formatDate(date, locale);
     }
 }
+
+export const DateRangeInput = withConfig<DateRangeInputProps>(DateRangeInputComponent);
