@@ -1,5 +1,5 @@
 {
-    "name": "@blueprintjs/core",
+    "name": "@bigcapitalhq/blueprintjs",
     "version": "3.50.2",
     "description": "Core styles & components",
     "main": "lib/cjs/index.js",
@@ -81,7 +81,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git@github.com:palantir/blueprint.git",
+        "url": "git@github.com:bigcapitalhq/blueprint.git",
         "directory": "packages/core"
     },
     "keywords": [

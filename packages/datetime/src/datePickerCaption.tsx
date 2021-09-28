@@ -26,7 +26,7 @@ import {
     OptionProps,
     ConfigContextState,
     withConfig,
-} from "@blueprintjs/core";
+} from "@bigcapitalhq/blueprintjs";
 
 import * as Classes from "./common/classes";
 import { clone } from "./common/dateUtils";

@@ -32,7 +32,7 @@ import {
     Popover,
     refHandler,
     setRef,
-} from "@blueprintjs/core";
+} from "@bigcapitalhq/blueprintjs";
 
 import * as Classes from "./common/classes";
 import { isDateValid, isDayInRange } from "./common/dateUtils";

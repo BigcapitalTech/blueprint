@@ -19,7 +19,7 @@ import * as React from "react";
 import DayPicker, { CaptionElementProps, DayModifiers, DayPickerProps, NavbarElementProps } from "react-day-picker";
 import { polyfill } from "react-lifecycles-compat";
 
-import { AbstractPureComponent2, Boundary, DISPLAYNAME_PREFIX, Divider, Props } from "@blueprintjs/core";
+import { AbstractPureComponent2, Boundary, DISPLAYNAME_PREFIX, Divider, Props } from "@bigcapitalhq/blueprintjs";
 
 import * as DateClasses from "./common/classes";
 import { DateRange } from "./common/dateRange";

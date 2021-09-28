@@ -1,5 +1,5 @@
 {
-    "name": "@blueprintjs/datetime",
+    "name": "@bigcapitalhq/blueprintjs-datetime",
     "version": "3.23.12",
     "description": "Components for interacting with dates and times",
     "main": "lib/cjs/index.js",
@@ -61,7 +61,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git@github.com:palantir/blueprint.git",
+        "url": "git@github.com:bigcapitalhq/blueprint.git",
         "directory": "packages/datetime"
     },
     "keywords": [

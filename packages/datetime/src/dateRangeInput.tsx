@@ -36,7 +36,7 @@ import {
     setRef,
     withConfig,
     ConfigContextState,
-} from "@blueprintjs/core";
+} from "@bigcapitalhq/blueprintjs";
 
 import { DateRange } from "./common/dateRange";
 import { areSameTime, isDateValid, isDayInRange } from "./common/dateUtils";
